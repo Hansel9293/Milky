@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Milky</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #000;
+    }
+
+    .terminal-loader {
+      width: 300px;
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      height: 75px;
+      font-family: 'Courier New', Courier, monospace;
+      color: #00ff00;
+      padding: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin: 20px auto;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .terminal-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .terminal-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .control {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #ff5f57;
+    }
+
+    .control.minimize {
+      background-color: #ffbd2e;
+    }
+
+    .control.maximize {
+      background-color: #28c840;
+    }
+
+    .text {
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid #00ff00;
+    }
+
+    blink-caret {
+      from {
+        border-color: transparent;
+      }
+      to {
+        border-color: #00ff00;
+      }
+    }
+
+    .text {
+      animation: blink-caret 0.5s step-end infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal-loader">
+    <div class="terminal-header">
+      <div class="terminal-title">Short Message</div>
+      <div class="terminal-controls">
+        <div class="control close"></div>
+        <div class="control minimize"></div>
+        <div class="control maximize"></div>
+      </div>
+    </div>
+    <div class="text" id="text-display"></div>
+  </div>
+
+  <script>
+    const messages = ["Loading...", "To: Milky", "From: Denzel", "Happy birthday!", "You did great this year!", "I'm so proud of you!", "I miss you!"];
+    let messageIndex = 0;
+
+    function typeText(textElement, message, callback) {
+      let charIndex = 0;
+
+      function typeChar() {
+        if (charIndex < message.length) {
+          textElement.textContent += message.charAt(charIndex);
+          charIndex++;
+          setTimeout(typeChar, 100);
+        } else {
+          setTimeout(callback, 1000);
+        }
+      }
+
+      typeChar();
+    }
+
+    function eraseText(textElement, callback) {
+      let text = textElement.textContent;
+
+      function eraseChar() {
+        if (text.length > 0) {
+          text = text.slice(0, -1);
+          textElement.textContent = text;
+          setTimeout(eraseChar, 50);
+        } else {
+          callback();
+        }
+      }
+
+      eraseChar();
+    }
+
+    function handleTypingSequence() {
+      const textElement = document.getElementById("text-display");
+
+      typeText(textElement, messages[messageIndex], () => {
+        eraseText(textElement, () => {
+          messageIndex = (messageIndex + 1) % messages.length;
+          handleTypingSequence();
+        });
+      });
+    }
+
+    handleTypingSequence();
+  </script>
+</body>
+</html>
